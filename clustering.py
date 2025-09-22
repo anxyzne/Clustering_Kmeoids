@@ -9,7 +9,7 @@ from sklearn.metrics import silhouette_score
 from sklearn_extra.cluster import KMedoids
 
 # ====== LOAD DATA ======
-df = pd.read_excel(r"C:\VScode\Project\clustering\Data_Profitability_Ratio.xlsx")
+df = pd.read_excel("Data_Profitability_Ratio.xlsx")
 
 st.title("Clustering IDX30 Profitability Ratios")
 
@@ -92,3 +92,4 @@ st.pyplot(fig)
 # tampilkan tabel hasil clustering
 st.subheader("Hasil Clustering")
 st.dataframe(df_std[["Share Code","Cluster"]])
+
