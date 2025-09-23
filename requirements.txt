@@ -5,5 +5,6 @@ seaborn
 numpy
 scikit-learn
 scikit-learn-extra @ git+https://github.com/scikit-learn-contrib/scikit-learn-extra.git
+openpyxl
 
 
