@@ -103,22 +103,22 @@ st.pyplot(fig)
 # tampilkan tabel hasil clustering
 st.subheader("Hasil Clustering")
 st.dataframe(df_std[["Company","Cluster"]])
-
-# ===============================
 # 3. RATA-RATA PROFITABILITY PER CLUSTER
+# # ===============================
+# st.subheader("Rata-rata Profitability per Cluster")
+
+# cluster_means = df_std.groupby("Cluster")[["ROA","ROE","NPM","GPM"]].mean()
+
+# fig, ax = plt.subplots(figsize=(8,5))
+# cluster_means.plot(kind="bar", ax=ax)
+# plt.xticks(rotation=0)
+# plt.title("Rata-rata Profitability per Cluster")
+# plt.ylabel("Rata-rata Standarisasi Nilai")
+# st.pyplot(fig)
+
+# st.dataframe(cluster_means)
 # ===============================
-st.subheader("Rata-rata Profitability per Cluster")
-
-cluster_means = df_std.groupby("Cluster")[["ROA","ROE","NPM","GPM"]].mean()
-
-fig, ax = plt.subplots(figsize=(8,5))
-cluster_means.plot(kind="bar", ax=ax)
-plt.xticks(rotation=0)
-plt.title("Rata-rata Profitability per Cluster")
-plt.ylabel("Rata-rata Standarisasi Nilai")
-st.pyplot(fig)
-
-st.dataframe(cluster_means)
+# 
 
 # ===============================
 # 4. RANKING CLUSTER
@@ -141,5 +141,6 @@ st.success(
     f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
     f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
 )
+
 
 
