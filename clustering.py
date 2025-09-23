@@ -5,7 +5,6 @@ import seaborn as sns
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-from sklearn.metrics import silhouette_score
 from sklearn_extra.cluster import KMedoids
 
 # ====== LOAD DATA ======
@@ -46,7 +45,7 @@ if selected_companies:
     st.pyplot(fig)
 
 # ===============================
-# 2. CLUSTERING K-MEDOIDS
+# 2. CLUSTERING K-MEDOIDS + ELBOW AUTO
 # ===============================
 st.header("Clustering K-Medoids")
 
@@ -55,27 +54,39 @@ X = df_std[["ROA","ROE","NPM","GPM"]].values
 # hitung SSE untuk elbow method
 sse = []
 K = range(2, 10)
+models = {}
 for k in K:
     model = KMedoids(n_clusters=k, random_state=42).fit(X)
-    # jumlah jarak tiap titik ke medoid terdekat
     inertia = sum(
         [min([np.linalg.norm(x - medoid)**2 for medoid in model.cluster_centers_]) for x in X]
     )
     sse.append(inertia)
+    models[k] = model
+
+# metode garis lurus awal-akhir (knee detection manual)
+point_first = np.array([K[0], sse[0]])
+point_last = np.array([K[-1], sse[-1]])
+
+distances = []
+for i, (k, sse_val) in enumerate(zip(K, sse)):
+    point = np.array([k, sse_val])
+    distance = np.abs(np.cross(point_last - point_first, point_first - point)) / np.linalg.norm(point_last - point_first)
+    distances.append(distance)
+
+best_k = K[int(np.argmax(distances))]
 
 # plot elbow
 fig, ax = plt.subplots()
 ax.plot(K, sse, 'bo-')
+ax.axvline(best_k, color='red', linestyle='--', label=f"Optimal k = {best_k}")
 ax.set_xlabel("Jumlah Cluster (k)")
 ax.set_ylabel("SSE (Sum of Squared Errors)")
-ax.set_title("Elbow Method untuk Menentukan k")
+ax.set_title("Elbow Method dengan Knee Detection")
+ax.legend()
 st.pyplot(fig)
 
-# pilih k (misalnya user tentukan sendiri)
-best_k = st.slider("Pilih jumlah cluster (k):", min_value=2, max_value=9, value=3)
-
 # fit final model
-model = KMedoids(n_clusters=best_k, random_state=42).fit(X)
+model = models[best_k]
 df_std["Cluster"] = model.labels_
 
 # PCA untuk visualisasi
@@ -93,3 +104,40 @@ st.pyplot(fig)
 st.subheader("Hasil Clustering")
 st.dataframe(df_std[["Share Code","Cluster"]])
 
+# ===============================
+# 3. RATA-RATA PROFITABILITY PER CLUSTER
+# ===============================
+st.subheader("Rata-rata Profitability per Cluster")
+
+cluster_means = df_std.groupby("Cluster")[["ROA","ROE","NPM","GPM"]].mean()
+
+fig, ax = plt.subplots(figsize=(8,5))
+cluster_means.plot(kind="bar", ax=ax)
+plt.xticks(rotation=0)
+plt.title("Rata-rata Profitability per Cluster")
+plt.ylabel("Rata-rata Standarisasi Nilai")
+st.pyplot(fig)
+
+st.dataframe(cluster_means)
+
+# ===============================
+# 4. RANKING CLUSTER
+# ===============================
+cluster_means["Cluster_Score"] = cluster_means.mean(axis=1)
+ranking = cluster_means.sort_values("Cluster_Score", ascending=False)
+ranking["Ranking"] = range(1, len(ranking) + 1)
+
+st.subheader("Ranking Cluster berdasarkan Profitability")
+st.dataframe(ranking[["ROA","ROE","NPM","GPM","Cluster_Score","Ranking"]])
+
+# ===============================
+# 5. REKOMENDASI
+# ===============================
+best_cluster = ranking.index[0]
+best_companies = df_std[df_std["Cluster"] == best_cluster]["Share Code"].tolist()
+
+st.success(
+    f"Berdasarkan hasil clustering, **Cluster {best_cluster}** memiliki rata-rata rasio profitabilitas terbaik "
+    f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
+    f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
+)
