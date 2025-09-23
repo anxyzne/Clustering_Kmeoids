@@ -102,7 +102,7 @@ st.pyplot(fig)
 
 # tampilkan tabel hasil clustering
 st.subheader("Hasil Clustering")
-st.dataframe(df_std[["Share Code","Cluster"]])
+st.dataframe(df_std[["Company","Cluster"]])
 
 # ===============================
 # 3. RATA-RATA PROFITABILITY PER CLUSTER
@@ -141,3 +141,4 @@ st.success(
     f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
     f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
 )
+
