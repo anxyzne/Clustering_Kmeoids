@@ -123,12 +123,12 @@ st.dataframe(cluster_means)
 # ===============================
 # 4. RANKING CLUSTER
 # ===============================
-cluster_means["Cluster_Score"] = cluster_means.mean(axis=1)
-ranking = cluster_means.sort_values("Cluster_Score", ascending=False)
+cluster_means["Rata-Rata Rasio"] = cluster_means.mean(axis=1)
+ranking = cluster_means.sort_values("Rata-Rata Rasio", ascending=False)
 ranking["Ranking"] = range(1, len(ranking) + 1)
 
 st.subheader("Ranking Cluster berdasarkan Profitability")
-st.dataframe(ranking[["ROA","ROE","NPM","GPM","Cluster_Score","Ranking"]])
+st.dataframe(ranking[["ROA","ROE","NPM","GPM","Rata-Rata Rasio","Ranking"]])
 
 # ===============================
 # 5. REKOMENDASI
@@ -141,4 +141,5 @@ st.success(
     f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
     f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
 )
+
 
