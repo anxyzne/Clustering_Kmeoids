@@ -115,27 +115,40 @@ if execute:
         min_samples = d + 1
         k = min_samples - 1  # sesuai teori: k = minPts - 1
 
+        # hitung k-distance
         neigh = NearestNeighbors(n_neighbors=k)
-        nbrs = neigh.fit(X)
-        distances, _ = nbrs.kneighbors(X)
-        distances = np.sort(distances[:, -1])  # ambil jarak ke tetangga ke-k
+        neigh.fit(X)
+        distances, _ = neigh.kneighbors(X)
+        k_distances = np.sort(distances[:, -1])
 
-        # cari "knee" di kurva k-distance
-        diffs = np.diff(distances)
-        knee = np.argmax(diffs)
-        eps = distances[knee]
+        # cari knee pakai KneeLocator
+        kneedle = KneeLocator(
+            range(len(k_distances)), 
+            k_distances, 
+            curve='convex', 
+            direction='increasing'
+        )
+        eps = k_distances[kneedle.knee]
 
+        # fit DBSCAN
         model = DBSCAN(eps=eps, min_samples=min_samples)
         labels = model.fit_predict(X)
         df_std["Cluster"] = labels
 
         # plot k-distance
-        fig, ax = plt.subplots()
-        ax.plot(distances, label=f"{k}-distance")
-        ax.axvline(knee, color="red", linestyle="--", label=f"Eps ≈ {eps:.2f}")
-        ax.set_title("DBSCAN k-distance Plot")
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.plot(k_distances, label="k-distance")
+        ax.axvline(x=kneedle.knee, color="r", linestyle="--", label=f"Elbow at index {kneedle.knee}")
+        ax.axhline(y=eps, color="g", linestyle="--", label=f"Epsilon ≈ {eps:.4f}")
+        ax.set_xlabel("Data Point Index (sorted)")
+        ax.set_ylabel(f"{k}-Distance")
+        ax.set_title("DBSCAN k-Distance")
         ax.legend()
+        ax.grid(True)
         st.pyplot(fig)
+
+        st.info(f"Nilai epsilon (ε) yang terdeteksi otomatis: {eps:.4f}")
+
 
 
     # ===============================
@@ -180,5 +193,6 @@ if execute:
         f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
         f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
     )
+
 
 
