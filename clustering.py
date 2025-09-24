@@ -113,11 +113,12 @@ if execute:
         # -------------------------------
         d = X.shape[1]
         min_samples = d + 1
+        k = min_samples - 1  # sesuai teori: k = minPts - 1
 
-        neigh = NearestNeighbors(n_neighbors=min_samples)
+        neigh = NearestNeighbors(n_neighbors=k)
         nbrs = neigh.fit(X)
         distances, _ = nbrs.kneighbors(X)
-        distances = np.sort(distances[:, -1])
+        distances = np.sort(distances[:, -1])  # ambil jarak ke tetangga ke-k
 
         # cari "knee" di kurva k-distance
         diffs = np.diff(distances)
@@ -130,10 +131,12 @@ if execute:
 
         # plot k-distance
         fig, ax = plt.subplots()
-        ax.plot(distances)
+        ax.plot(distances, label=f"{k}-distance")
         ax.axvline(knee, color="red", linestyle="--", label=f"Eps ≈ {eps:.2f}")
+        ax.set_title("DBSCAN k-distance Plot")
         ax.legend()
         st.pyplot(fig)
+
 
     # ===============================
     # VISUALISASI CLUSTER (PCA 2D)
@@ -177,4 +180,5 @@ if execute:
         f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
         f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
     )
+
 
