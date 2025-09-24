@@ -63,7 +63,7 @@ if selected_companies:
 # ===============================
 st.header("Clustering")
 
-method = st.radio("Pilih metode clustering:", ["K-Medoids (Auto Elbow)", "DBSCAN"])
+method = st.radio("Pilih metode clustering:", ["K-Medoids", "DBSCAN"])
 execute = st.button("Execute")
 
 if execute:
@@ -194,35 +194,36 @@ if execute:
             ax.annotate(txt, (df_std["PC1"].iloc[i], df_std["PC2"].iloc[i]))
         st.pyplot(fig)
 
-    # hasil clustering
-    st.subheader("Hasil Clustering")
-    st.dataframe(df_std[["Company","Cluster"]])
+        # hasil clustering
+        st.subheader("Hasil Clustering")
+        st.dataframe(df_std[["Company","Cluster"]])
+    
+        # rekomendasi DBSCAN
+        if -1 in df_std["Cluster"].unique():
+            outliers = df_std[df_std["Cluster"] == -1]["Share Code"].tolist()
+            st.warning(
+                f"DBSCAN mendeteksi perusahaan berikut sebagai **outlier** (Cluster -1): {', '.join(outliers)}. "
+                f"Perusahaan ini memiliki rasio profitabilitas yang jauh berbeda dari lainnya, "
+                f"sehingga perlu perhatian lebih atau analisis lebih dalam sebelum dipertimbangkan untuk investasi."
+            )
+    
+        valid_clusters = [c for c in df_std["Cluster"].unique() if c != -1]
+        if valid_clusters:
+            cluster_means = df_std[df_std["Cluster"] != -1].groupby("Cluster")[["ROA","ROE","NPM","GPM"]].mean()
+            cluster_means["Rata-Rata Rasio"] = cluster_means.mean(axis=1)
+            ranking = cluster_means.sort_values("Rata-Rata Rasio", ascending=False)
+            ranking["Ranking"] = range(1, len(ranking) + 1)
+    
+            st.subheader("Ranking Cluster (tanpa outlier -1)")
+            st.dataframe(ranking)
+    
+            best_cluster = ranking.index[0]
+            best_companies = df_std[df_std["Cluster"] == best_cluster]["Share Code"].tolist()
+            st.success(
+                f"Cluster {best_cluster} (Ranking 1) memiliki rata-rata profitabilitas terbaik. "
+                f"Perusahaan anggota cluster ini disarankan untuk investasi: {', '.join(best_companies)}."
+            )
 
-    # rekomendasi DBSCAN
-    if -1 in df_std["Cluster"].unique():
-        outliers = df_std[df_std["Cluster"] == -1]["Share Code"].tolist()
-        st.warning(
-            f"DBSCAN mendeteksi perusahaan berikut sebagai **outlier** (Cluster -1): {', '.join(outliers)}. "
-            f"Perusahaan ini memiliki rasio profitabilitas yang jauh berbeda dari lainnya, "
-            f"sehingga perlu perhatian lebih atau analisis lebih dalam sebelum dipertimbangkan untuk investasi."
-        )
-
-    valid_clusters = [c for c in df_std["Cluster"].unique() if c != -1]
-    if valid_clusters:
-        cluster_means = df_std[df_std["Cluster"] != -1].groupby("Cluster")[["ROA","ROE","NPM","GPM"]].mean()
-        cluster_means["Rata-Rata Rasio"] = cluster_means.mean(axis=1)
-        ranking = cluster_means.sort_values("Rata-Rata Rasio", ascending=False)
-        ranking["Ranking"] = range(1, len(ranking) + 1)
-
-        st.subheader("Ranking Cluster (tanpa outlier -1)")
-        st.dataframe(ranking)
-
-        best_cluster = ranking.index[0]
-        best_companies = df_std[df_std["Cluster"] == best_cluster]["Share Code"].tolist()
-        st.success(
-            f"Cluster {best_cluster} (Ranking 1) memiliki rata-rata profitabilitas terbaik. "
-            f"Perusahaan anggota cluster ini disarankan untuk investasi: {', '.join(best_companies)}."
-        )
 
 
 
