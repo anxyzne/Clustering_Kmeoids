@@ -11,12 +11,10 @@ from sklearn_extra.cluster import KMedoids
 st.sidebar.header("Pilih Dataset")
 
 file_options = {
-    "Profitability Ratio IDX30": "Data_Profitability_Ratio.xlsx",
-    "Dataset Contoh 2": "Data_Profitability_Ratio_2.xlsx",
-    "Dataset Contoh 3": "Data_Profitability_Ratio_3.xlsx"
+    "Profitability Ratio IDX30": "Data_Profitability_Ratio.xlsx"
 }
 
-selected_file = st.sidebar.selectbox("Pilih file dataset:", list(file_options.keys()))
+selected_file = st.sidebar.selectbox("Dataset:", list(file_options.keys()))
 
 # Load sesuai pilihan user
 df = pd.read_excel(file_options[selected_file])
@@ -155,4 +153,5 @@ st.success(
     f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
     f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
 )
+
 
