@@ -61,7 +61,7 @@ if selected_companies:
 # ===============================
 # 2. CLUSTERING (K-MEDOIDS AUTO + DBSCAN)
 # ===============================
-st.header("Clustering")
+st.header("Clustering Method")
 
 method = st.radio("Pilih metode clustering:", ["K-Medoids", "DBSCAN"])
 execute = st.button("Execute")
@@ -223,6 +223,7 @@ if execute:
                 f"Cluster {best_cluster} (Ranking 1) memiliki rata-rata profitabilitas terbaik. "
                 f"Perusahaan anggota cluster ini disarankan untuk investasi: {', '.join(best_companies)}."
             )
+
 
 
 
