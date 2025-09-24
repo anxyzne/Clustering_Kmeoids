@@ -121,9 +121,12 @@ st.dataframe(df_std[["Company","Cluster"]])
 # 
 
 # ===============================
-# 4. RANKING CLUSTER
 # ===============================
+# 4. RANKING CLUSTER (langsung tanpa tabel rata-rata)
+# ===============================
+cluster_means = df_std.groupby("Cluster")[["ROA","ROE","NPM","GPM"]].mean()
 cluster_means["Rata-Rata Rasio"] = cluster_means.mean(axis=1)
+
 ranking = cluster_means.sort_values("Rata-Rata Rasio", ascending=False)
 ranking["Ranking"] = range(1, len(ranking) + 1)
 
@@ -141,6 +144,3 @@ st.success(
     f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
     f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
 )
-
-
-
