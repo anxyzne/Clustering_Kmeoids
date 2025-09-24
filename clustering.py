@@ -9,6 +9,7 @@ from sklearn_extra.cluster import KMedoids
 
 # ====== LOAD DATA ======
 st.sidebar.header("Pilih Dataset")
+st.sidebar.write("Silakan pilih dataset yang sudah tersedia di project ini:")
 
 file_options = {
     "Profitability Ratio IDX30": "Data_Profitability_Ratio.xlsx"
@@ -153,5 +154,6 @@ st.success(
     f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
     f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
 )
+
 
 
