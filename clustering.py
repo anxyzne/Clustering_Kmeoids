@@ -6,6 +6,9 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn_extra.cluster import KMedoids
+from sklearn.neighbors import NearestNeighbors
+from sklearn.cluster import DBSCAN
+
 
 # ====== LOAD DATA ======
 st.sidebar.header("Pilih Dataset")
@@ -174,3 +177,4 @@ if execute:
         f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
         f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
     )
+
