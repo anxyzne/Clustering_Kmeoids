@@ -8,6 +8,8 @@ from sklearn.decomposition import PCA
 from sklearn_extra.cluster import KMedoids
 from sklearn.neighbors import NearestNeighbors
 from sklearn.cluster import DBSCAN
+from kneed import KneeLocator
+
 
 
 # ====== LOAD DATA ======
@@ -193,6 +195,7 @@ if execute:
         f"(Ranking 1). Disarankan untuk mempertimbangkan perusahaan dalam cluster ini untuk investasi.\n\n"
         f"Perusahaan anggota cluster terbaik: {', '.join(best_companies)}"
     )
+
 
 
 
