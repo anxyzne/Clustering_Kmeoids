@@ -24,7 +24,7 @@ selected_file = st.sidebar.selectbox("Dataset:", list(file_options.keys()))
 # Load sesuai pilihan user
 df = pd.read_excel(file_options[selected_file])
 
-st.title("Clustering IDX30 Profitability Ratios")
+st.title("Clustering Profitability Ratios")
 
 # ===============================
 # 0. STANDARDIZATION
@@ -223,6 +223,7 @@ if execute:
                 f"Cluster {best_cluster} (Ranking 1) memiliki rata-rata profitabilitas terbaik. "
                 f"Perusahaan anggota cluster ini disarankan untuk investasi: {', '.join(best_companies)}."
             )
+
 
 
 
