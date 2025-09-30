@@ -12,19 +12,22 @@ from kneed import KneeLocator
 
 
 
-# ====== LOAD DATA ======
-st.sidebar.header("Pilih Dataset")
+# ====== UPLOAD DATA ======
+st.sidebar.header("Upload Dataset")
 
-file_options = {
-    "Profitability Ratio IDX30": "Data_Profitability_Ratio.xlsx"
-}
+uploaded_file = st.sidebar.file_uploader(
+    "Unggah file Excel (.xlsx) berisi rasio profitabilitas perusahaan",
+    type=["xlsx"]
+)
 
-selected_file = st.sidebar.selectbox("Dataset:", list(file_options.keys()))
-
-# Load sesuai pilihan user
-df = pd.read_excel(file_options[selected_file])
+if uploaded_file is not None:
+    df = pd.read_excel(uploaded_file)
+    st.success("✅ File berhasil diunggah!")
+else:
+    st.warning("Silakan unggah file Excel terlebih dahulu untuk melanjutkan.")
 
 st.title("Clustering Profitability Ratios")
+
 
 # ===============================
 # 0. STANDARDIZATION
@@ -223,6 +226,7 @@ if execute:
                 f"Cluster {best_cluster} (Ranking 1) memiliki rata-rata profitabilitas terbaik. "
                 f"Perusahaan anggota cluster ini disarankan untuk investasi: {', '.join(best_companies)}."
             )
+
 
 
 
