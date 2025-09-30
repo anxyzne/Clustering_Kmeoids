@@ -20,13 +20,12 @@ uploaded_file = st.sidebar.file_uploader(
     type=["xlsx"]
 )
 
+st.title("Clustering Profitability Ratios")
+
+# Jalankan semua analisis hanya jika file sudah diunggah
 if uploaded_file is not None:
     df = pd.read_excel(uploaded_file)
     st.success("✅ File berhasil diunggah!")
-else:
-    st.warning("Silakan unggah file Excel terlebih dahulu untuk melanjutkan.")
-
-st.title("Clustering Profitability Ratios")
 
 
 # ===============================
@@ -226,6 +225,7 @@ if execute:
                 f"Cluster {best_cluster} (Ranking 1) memiliki rata-rata profitabilitas terbaik. "
                 f"Perusahaan anggota cluster ini disarankan untuk investasi: {', '.join(best_companies)}."
             )
+
 
 
 
